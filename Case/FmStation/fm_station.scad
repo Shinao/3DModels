@@ -1,10 +1,10 @@
-DISPLAY_TOP_BOX = false;
-DISPLAY_BOTTOM_BOX = true;
+DISPLAY_TOP_BOX = true;
+DISPLAY_BOTTOM_BOX = false;
 DISPLAY_NUT_JOINER = false;
 
 CARD_SIZE_LONG_EDGE =86;
 CARD_SIZE_SHORT_EDGE = 60;
-CARD_STACK_HEIGHT = 20;
+CARD_STACK_HEIGHT = 25;
 WALL_THICKNESS = 2;
 TAB_THICKNESS = 10;
 EXTRA_SPACE = .25;
@@ -94,6 +94,41 @@ if (DISPLAY_BOTTOM_BOX) {
         
         translate([39, 2, 2.5])
         cube([12, 60, 12.7]);
+        
+        $fn=100;
+        translate([-5, 27, 14])
+        rotate([0, 90, 0])
+        cylinder(20, 3, 3);
+        
+        $fn = 100;
+    translate([21, 5, 17.5])
+    rotate([90, 0, 0])
+    cylinder(10, 3.1, 3.1);
+    
+    translate([17.9, -5, 17])
+    cube([6.2, 10, 70]);
+        
+        translate([1, 26.5, 8.2])
+        cube([10, 1, 12]);
+               
+        translate([21, 7.54, 2])
+        scale([0.30, 0.30, 0.6])
+        import("../Common/threaded_rod_8x100.stl");
+        
+        translate([22.2, 55.8, 2])
+        scale([0.30, 0.30, 0.6])
+        import("../Common/threaded_rod_8x100.stl");
+        
+        translate([73, 40.5, 2])
+        scale([0.30, 0.30, 0.6])
+        import("../Common/threaded_rod_8x100.stl");
+        
+        translate([73, 12.6, 2])
+        scale([0.30, 0.30, 0.6])
+        import("../Common/threaded_rod_8x100.stl");
+        
+        translate([50, CARD_SIZE_SHORT_EDGE / 2 - 15 + WALL_THICKNESS, WALL_THICKNESS + CARD_STACK_HEIGHT - 14])
+        cube([30, 30, 14]);
     }
 }
 
@@ -118,18 +153,18 @@ translate ([SPACE_BETWEEN_BOTTOM_AND_LID, 0, 0])
     }
 };
 
-module rfid_logo() {
-    scale(24)
-    translate([4.8, 0.7, -0.05])
+module wifi_logo() {
+    translate([110, 34, -3.8])
+    scale(100)
     rotate([0, 0, 90])
-    import("logo_nfc.stl");
+    import("logo_fm.stl");
 };
 
-module nfc_text() {
-    translate([170, 53, 1.2])
+module rf_text() {
+    translate([125, 44, 1.2])
     rotate([0, 180, 90])
     linear_extrude(height=10)
-    text("NFC", 14, font="Liberation Sans:style=Bold");
+    text("FM", 14, font="Liberation Sans:style=Bold");
 }
 
 module hole_power() {
@@ -138,54 +173,71 @@ module hole_power() {
 
     translate([95, 17, 6])
     cube([10, 13, 11]);
+    
+    $fn=100;
+    translate([95, 39.5, 10.5])
+    rotate([0, 90, 0])
+    cylinder(20, 3, 3);
+    
+    translate([95, 36.5, 11])
+    cube([8, 6, 14]);
 }
 
-module bearing_module() {
-    difference() {
-        union() {
-//            $fn=100;
-//            translate([149, 17.5, 0])
-//            cylinder(5, 1.5, 1.5);
-            
-            translate([149, 17.5, 0])
-            scale([0.35, 0.35, 0.6])
-            import("../Common/threaded_rod_8x100.stl");
-            
-//            translate([149, 51.5, 10])
-//            cylinder(20, 1.5, 1.5);
-            
-            translate([149, 51.5, 0])
-            scale([0.35, 0.35, 0.6])
-            import("../Common/threaded_rod_8x100.stl");
-        }
-        
-        translate([145, 11, 8])
-        cube([10, 50, 300]);
-    }
+module segment_led() {
+    translate([143, 10.3, -5])
+    cube([17, 48, 15]);
+    
+    translate([142, 8.8, 1])
+    cube([19, 51, 8]);
+}
 
+module potentiometer() {
+    $fn=100;
+    translate([181.5, 35, -5])
+    cylinder(20, 7.8, 7.8);
+}
+
+module audio_jack() {
+    $fn = 100;
+    translate([102 + 21, 70, 10])
+    rotate([90, 0, 0])
+    cylinder(3.6, 6, 6);
+    
+    translate([102 + 17.9, 65, 6])
+    cube([6.2, 10, 70]);
 }
 
 if (DISPLAY_TOP_BOX) {
     difference() {
         union() {
             top_box();
-           bearing_module();
         }
         
+        audio_jack();
+        potentiometer();
+        segment_led(); 
+        wifi_logo();
+        translate([0, 0, 5])
         hole_power();
-        nfc_text();
-        rfid_logo();
+        rf_text();
     }
 }
 
 if (DISPLAY_NUT_JOINER) {
-    translate([229, 51.5, 0])
-    scale([0.35, 0.35, 0.6])
-    import("../Common/NutJoiner18x9.stl");
+    difference() {
+        union() {
+            translate([229, 51.5, 0])
+            scale([0.30, 0.30, 0.6])
+            import("../Common/bolt_25x8_socket.stl");
+            
+            translate([229, 30, 0])
+            scale([0.30, 0.30, 0.6])
+            import("../Common/bolt_25x8_socket.stl");
+        }
     
-    translate([229, 30, 0])
-    scale([0.35, 0.35, 0.6])
-    import("../Common/NutJoiner18x9.stl");
+        translate([220, 0, 7])
+        cube([20, 80, 15]);
+    }
 }
 
    
